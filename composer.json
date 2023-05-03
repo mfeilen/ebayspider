@@ -1,0 +1,23 @@
+{
+    "name": "mfeilen/ebayspider",
+    "type": "library",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Markus Feilen",
+            "role": "developer"
+        }
+    ],
+    "minimum-stability": "beta",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=5.6",
+        "simplehtmldom/simplehtmldom": "^2.0@RC"
+    },
+    "homepage": "https://github.com/mfeilen/ebayspider.git/",
+    "suggest": {
+        "ext-mbstring": "Allows better decoding for multi-byte documents",
+        "ext-curl": "Needed to support cURL downloads in class HtmlWeb",
+        "ext-openssl": "Allows loading HTTPS pages when using cURL"
+    }
+}
