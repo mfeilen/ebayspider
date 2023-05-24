@@ -16,13 +16,13 @@ class CompatibilityListFetcher {
     const compatibilityListSelector = 'div[id=d-motors-compatibility-table]';
 
     /**
-     * @param $itemId
-     * @param $categoryId
+     * @param int $itemId
+     * @param int $categoryId
      *
      * @return array
      * @throws \Exception
      */
-    public static function get($itemId, $categoryId) {
+    public static function get(int $itemId, int $categoryId): array{
         $page = 0;
         $ret = [
             'head' => [],
@@ -68,11 +68,15 @@ class CompatibilityListFetcher {
 
     /**
      * Checks if a product has a compatibility list
+     * @param int $itemId
+     *
      * @return bool
+     * @throws \Exception
      */
-    private static function isProductWithList($itemId) {
+    private static function isProductWithList(int $itemId): bool {
         $postUrl = sprintf(self::productUrl, $itemId);
         $ch = curl_init($postUrl);
+
         $headers = array(
             'Content-Type: application/json',
             'Cache-Control: no-cache',
@@ -108,17 +112,12 @@ class CompatibilityListFetcher {
 
         // unpack
         $response = gzdecode($response);
-
-        if (!$response) {
+        if (empty($response)) {
             throw new Exception(sprintf('Could nod load initial product page from ebay server (http %d), because %s', $curl_errno, $curl_error));
         }
 
-        $html = new HtmlDocument($response);
-        if ($html === null) {
-            throw new Exception('could not read html data from document');
-        }
-
         // is there already a list in the document?
+        $html = new HtmlDocument($response);
         $htmlData = $html->find(self::compatibilityListSelector);
         if (is_array($htmlData) && !empty($htmlData)) {
             return true;
@@ -131,7 +130,7 @@ class CompatibilityListFetcher {
      * Sleeps for 0.5 up 2 seconds
      * @return void
      */
-    private static function spiderNap() {
+    private static function spiderNap(): void {
         $t = microtime(true);
         $sleepTime = (float)(rand(0,1).'.'.rand(500,999)); // 0.5 up to 2 seconds
         $sleepTime *= 1000000;
@@ -144,7 +143,7 @@ class CompatibilityListFetcher {
      *
      * @return int
      */
-    private static function getMaxPages($apiResult) {
+    private static function getMaxPages($apiResult): int {
         $pagesStr = $apiResult->modules->COMPATIBILITY_TABLE->paginatedTable->pagination->itemsPerPage->label->textSpans[0]->text; // Page 1 of ??
         $pagesStr = str_replace('Page ', '', $pagesStr);
         $exploded = explode(' of ', $pagesStr);
@@ -153,14 +152,14 @@ class CompatibilityListFetcher {
 
 
     /**
-     * @param $pageNum int
-     * @param $itemId string
-     * @param $categoryId string
+     * @param int $pageNum
+     * @param int $itemId
+     * @param int $categoryId
      *
      * @return ResponseBody
      * @throws \Exception
      */
-    private static function getApiResult($pageNum, $itemId, $categoryId) {
+    private static function getApiResult(int $pageNum, int $itemId, int $categoryId): ResponseBody {
         $pageNum = $pageNum*20; // 0, 20, 40, 60 ebay offset
         $postUrl = sprintf(self::fetchUrl, $pageNum);
         $ch = curl_init($postUrl);
@@ -213,7 +212,16 @@ class CompatibilityListFetcher {
             throw new Exception(sprintf('Could nod load data from ebay server (http %d), because %s', $curl_errno, $curl_error));
         }
 
-        return $ret;
+        // recast as ResponseBody
+        $new = new ResponseBody();
+        foreach($ret as $property => &$value)
+        {
+            $new->$property = &$value;
+            unset($ret->$property);
+        }
+        unset($value);
+        unset($object);
+        return $new;
     }
 
 
@@ -235,13 +243,13 @@ class CompatibilityListFetcher {
         return $r;
     }
 
-
     /**
-     * @param $apiResult ResponseBody
+     * Parses the api result and returns an array containing head + data
+     * @param \ResponseBody $apiResult
      *
-     * @return array
+     * @return array|array[]
      */
-    private static function getParsedResult($apiResult) {
+    private static function getParsedResult(ResponseBody $apiResult): array {
         $result = [
             'head'=> [],
             'body' => [],

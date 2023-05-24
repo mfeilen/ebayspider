@@ -1,13 +1,9 @@
 <?php
 
-// via autoload
-// include_once 'vendor/autoload.php';
-// use simplehtmldom\HtmlNode;
-// use simplehtmldom\HtmlWeb;
-
 // manual include w/o autoloader
-include_once 'vendor/simplehtmldom/simplehtmldom/HtmlWeb.php';
+include_once 'vendor/simplehtmldom/simplehtmldom/HtmlWeb.php'; // include_once 'vendor/autoload.php';
 use simplehtmldom\HtmlWeb;
+use simplehtmldom\HtmlNode;
 
 /**
  * HtmlCompatibilityListFetcher class only supports to parse the compatibility list from the first page
@@ -27,7 +23,7 @@ class HtmlCompatibilityListFetcher {
      * @return array[]
      * @throws \Exception
      */
-    public static function GetCompatibilityList($url, $selector = '') {
+    public static function GetCompatibilityList(string $url, string $selector = ''): array {
 
         $ret = [
             'head' => [],
@@ -62,7 +58,7 @@ class HtmlCompatibilityListFetcher {
      *
      * @return string[]
      */
-    private static function getCompatibilityListHeader($htmlData) {
+    private static function getCompatibilityListHeader(array $htmlData): array {
         $ret = [];
 
         /**
@@ -93,7 +89,7 @@ class HtmlCompatibilityListFetcher {
      *
      * @return string[]
      */
-    private static function getCompatibilityListData($htmlData) {
+    private static function getCompatibilityListData(array $htmlData): array {
         $ret = [];
 
         /**

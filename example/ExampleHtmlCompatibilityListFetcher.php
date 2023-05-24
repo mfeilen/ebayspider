@@ -1,6 +1,6 @@
 <?php
 
-require_once '../EbaySpider.class.php';
+require_once '../HtmlCompatibilityListFetcher.class.php';
 
 try {
     // only supports to read the first page of a compatibility list
