@@ -268,7 +268,12 @@ class CompatibilityListFetcher {
             array_shift($rowData->cells);
             // get cell data
             foreach($rowData->cells as $cell) {
-                $row[] = (string)$cell->textSpans[0]->text;
+                $txtValue = '';
+                if (isset($cell->textSpans)) {
+                    $txtValue = (string)$cell->textSpans[0]->text;
+                }
+
+                $row[] = $txtValue;
             }
 
             $result['body'][] = $row;
