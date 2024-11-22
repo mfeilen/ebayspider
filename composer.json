@@ -1,5 +1,6 @@
 {
     "name": "mfeilen/ebayspider",
+    "description": "Reads the car compatibility list from ebay",
     "type": "library",
     "license": "Apache-2.0",
     "authors": [
@@ -13,7 +14,8 @@
     "require": {
         "php": ">=8.0",
         "simplehtmldom/simplehtmldom": "^2.0@RC",
-        "ext-zlib": "*"
+        "ext-zlib": "*",
+      "ext-curl": "*"
     },
     "homepage": "https://github.com/mfeilen/ebayspider.git/",
     "suggest": {
